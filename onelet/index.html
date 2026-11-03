@@ -196,7 +196,8 @@
 
   // Kampanya: ?k=tiktok_tr → Play referrer, App Store ct (pt girilince) — hangi hesap kaç indirme getirdi
   var PT = '122598923'; // App Store Connect sağlayıcı kimliği
-  var kod = (q.get('k') || '').toLowerCase();
+  // .com yalnız sosyal medyada kullanılıyor: etiketsiz ziyaret 'sosyal_<dil>' sayılır (mağaza raporunda sosyal medya + dil görünür)
+  var kod = (q.get('k') || ('sosyal_' + dil)).toLowerCase();
   var as = document.getElementById('as'), gp = document.getElementById('gp');
   var pl = 'https://play.google.com/store/apps/details?id=com.yeb.onelet&hl=' + dil;
   if (/^[a-z]{1,20}_[a-z]{2}$/.test(kod)) {
