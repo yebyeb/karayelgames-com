@@ -224,7 +224,8 @@
   if ((ios || android) && dene && q.get('stay') !== '1') {
     try { sessionStorage.setItem('onelet_yonlendi', '1'); } catch (e) {}
     var hedef = ios ? as.href
-      : 'intent://details?' + pl.split('?')[1] + '#Intent;scheme=market;package=com.android.vending;S.browser_fallback_url=' + encodeURIComponent(pl) + ';end';
+      // Android: oyunu başlatmayı dener (yüklüyse açılır, eski sürümler dahil); yoksa Chrome Play sayfasına geçer.
+      : 'intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=com.yeb.onelet;S.browser_fallback_url=' + encodeURIComponent(pl) + ';end';
     setTimeout(function () { location.href = hedef; }, 350);
   }
 
