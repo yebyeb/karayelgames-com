@@ -64,7 +64,9 @@
   /* Başlık ve oyunun adı oyunun kendi yazı tipiyle (Nunito). Ad iki katman: "OneLet" kalın, alt ad ince. */
   h1 { margin: 0; font-family: Nunito, Inter, -apple-system, sans-serif; font-size: 36px; font-weight: 900; letter-spacing: -.01em; line-height: 1.1; }
   .ad { margin: 12px 0 0; font-family: Nunito, Inter, -apple-system, sans-serif; font-size: 22px; font-weight: 700; letter-spacing: 0; color: #ece6f7; line-height: 1.25; }
-  .ad b { font-weight: 900; color: #fff; }
+  .ad b { display: block; font-size: 1.5em; font-weight: 900; color: #fff; letter-spacing: .01em; line-height: 1.05; margin-bottom: 4px;
+    text-shadow: 0 2px 14px rgb(9 7 13 / .6), 0 0 22px rgb(255 214 120 / .35); }
+  .ad .alt { font-weight: 700; opacity: .92; }
   h1, .ad { text-shadow: 0 2px 14px rgb(9 7 13 / .55); }
 
   /* simge: videodaki gibi buzlu camın içinden belirir */
@@ -199,7 +201,7 @@
   // "OneLet" kalın, ardındaki alt ad ince (adın kendisi değişmez, yalnız biçim).
   var adEl = document.getElementById('ad'), bol = t[1].split(/(:s*)/);
   adEl.textContent = ''; var bb = document.createElement('b'); bb.textContent = bol[0]; adEl.appendChild(bb);
-  if (bol.length > 1) adEl.appendChild(document.createTextNode(bol.slice(1).join('')));
+  if (bol.length > 1) { var al = document.createElement('span'); al.className = 'alt'; al.textContent = bol.slice(2).join(''); adEl.appendChild(al); }
   document.getElementById('as-ust').textContent = t[2];
   document.getElementById('gp-ust').textContent = t[3];
   document.querySelectorAll('[data-y]').forEach(function (a) { a.textContent = t[4 + +a.dataset.y]; });
