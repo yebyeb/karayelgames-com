@@ -221,11 +221,18 @@
   document.documentElement.classList.add(ios ? 'cihaz-ios' : android ? 'cihaz-android' : 'cihaz-masaustu');
   var dene = false;
   try { dene = sessionStorage.getItem('onelet_yonlendi') !== '1'; } catch (e) { dene = true; }
+  // Android düğmesi: oyun yüklüyse oyunu başlatır (dokunuş olduğu için Chrome izin verir), yoksa Play. Kendiliğinden yönlendirme
+  // dokunuşsuz uygulama başlatamıyor (Chrome yedeğe, Play'e düşüyor — A20s ölçüldü 2026-11-17).
+  var oyunAc = 'intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=com.yeb.onelet;S.browser_fallback_url=' + encodeURIComponent(pl) + ';end';
+  if (android) gp.href = oyunAc;
+  // Google Play'i olmayan telefonlar (Huawei/Honor HarmonyOS·EMUI): kendiliğinden yönlendirme yok, sayfa kalır.
+  var playYok = /HUAWEI|HONOR|HarmonyOS|HMSCore|HuaweiBrowser/i.test(ua);
+  if (playYok) dene = false;
   if ((ios || android) && dene && q.get('stay') !== '1') {
     try { sessionStorage.setItem('onelet_yonlendi', '1'); } catch (e) {}
     var hedef = ios ? as.href
       // Android: oyunu başlatmayı dener (yüklüyse açılır, eski sürümler dahil); yoksa Chrome Play sayfasına geçer.
-      : 'intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=com.yeb.onelet;S.browser_fallback_url=' + encodeURIComponent(pl) + ';end';
+      : oyunAc;   // dokunuşsuz: Chrome yedeğe (Play) geçer; Play sayfasında "Oyna" düğmesi var
     setTimeout(function () { location.href = hedef; }, 350);
   }
 
