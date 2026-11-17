@@ -223,7 +223,8 @@
   try { dene = sessionStorage.getItem('onelet_yonlendi') !== '1'; } catch (e) { dene = true; }
   // Android düğmesi: oyun yüklüyse oyunu başlatır (dokunuş olduğu için Chrome izin verir), yoksa Play. Kendiliğinden yönlendirme
   // dokunuşsuz uygulama başlatamıyor (Chrome yedeğe, Play'e düşüyor — A20s ölçüldü 2026-11-17).
-  var oyunAc = 'intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=com.yeb.onelet;S.browser_fallback_url=' + encodeURIComponent(pl) + ';end';
+  // Chrome yalnız BROWSABLE ekranları başlatır → uygulamadaki App Link tanımını (VIEW · https · karayelgames.com/onelet) hedefler; 1.0.6'da yok → Play.
+  var oyunAc = 'intent://karayelgames.com/onelet/#Intent;scheme=https;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;package=com.yeb.onelet;S.browser_fallback_url=' + encodeURIComponent(pl) + ';end';
   if (android) gp.href = oyunAc;
   // Google Play'i olmayan telefonlar (Huawei/Honor HarmonyOS·EMUI): kendiliğinden yönlendirme yok, sayfa kalır.
   var playYok = /HUAWEI|HONOR|HarmonyOS|HMSCore|HuaweiBrowser/i.test(ua);
