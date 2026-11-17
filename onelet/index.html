@@ -233,15 +233,16 @@
   var ua = navigator.userAgent || '';
   var ios = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   var android = /Android/.test(ua);
-  document.documentElement.classList.add(ios ? 'cihaz-ios' : android ? 'cihaz-android' : 'cihaz-masaustu');
+  // Google Play'i olmayan telefonlar (Huawei/Honor HarmonyOS·EMUI) başka mağaza kullanır → masaüstü gibi: iki düğme eşit, App Store üstte.
+  var playYok = /HUAWEI|HONOR|HarmonyOS|HMSCore|HuaweiBrowser/i.test(ua);
+  document.documentElement.classList.add(ios ? 'cihaz-ios' : android && !playYok ? 'cihaz-android' : 'cihaz-masaustu');
   var dene = false;
   try { dene = sessionStorage.getItem('onelet_yonlendi') !== '1'; } catch (e) { dene = true; }
   // Android düğmesi: oyun yüklüyse oyunu başlatır (dokunuş olduğu için Chrome izin verir), yoksa Play. Kendiliğinden yönlendirme
   // dokunuşsuz uygulama başlatamıyor (Chrome yedeğe, Play'e düşüyor — A20s ölçüldü 2026-11-17).
   // Chrome yalnız BROWSABLE ekranları başlatır → uygulamadaki App Link tanımını (VIEW · https · karayelgames.com/onelet) hedefler; 1.0.6'da yok → Play.
   var oyunAc = 'intent://karayelgames.com/onelet/#Intent;scheme=https;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;package=com.yeb.onelet;S.browser_fallback_url=' + encodeURIComponent(pl) + ';end';
-  // Google Play'i olmayan telefonlar (Huawei/Honor HarmonyOS·EMUI): intent: bağlantısını tarayıcı tanımayabilir → düz Play adresi, kendiliğinden yönlendirme yok.
-  var playYok = /HUAWEI|HONOR|HarmonyOS|HMSCore|HuaweiBrowser/i.test(ua);
+  // Play'siz telefon: intent: bağlantısını tarayıcı tanımayabilir → düz Play adresi, kendiliğinden yönlendirme yok.
   if (android && !playYok) gp.href = oyunAc;
   document.getElementById('simge-bag').href = ios ? as.href : android ? gp.href : '#magazalar';
   if (playYok) dene = false;
