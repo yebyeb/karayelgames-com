@@ -64,7 +64,7 @@
   /* Başlık ve oyunun adı oyunun kendi yazı tipiyle (Nunito). Ad iki katman: "OneLet" kalın, alt ad ince. */
   h1 { margin: 0; font-family: Nunito, Inter, -apple-system, sans-serif; font-size: clamp(22px, calc((100vw - 40px) / 9.6), 30px); font-weight: 800; letter-spacing: .01em; line-height: 1.15; color: #f3eefb; white-space: nowrap; }
   /* Boy: en uzun dilde (fr "Joue gratuitement !", Nunito 800 = 9,14 × punto) tek satır; 30 px tavan, dar ekranda küçülür. */
-  .ad { margin: 24px 0 0; font-family: Nunito, Inter, -apple-system, sans-serif; font-size: 22px; font-weight: 700; letter-spacing: 0; color: #ece6f7; line-height: 1.25; }
+  .ad { margin: 0; font-family: Nunito, Inter, -apple-system, sans-serif; font-size: 22px; font-weight: 700; letter-spacing: 0; color: #ece6f7; line-height: 1.25; }
   /* Oyunun adı: sayfanın en büyük yazısı, sıcak altın (başlıktan renk ve boyla ayrılır). */
   .ad b { display: block; font-size: 2em; font-weight: 900; letter-spacing: .015em; line-height: 1.05; margin-bottom: 6px; color: #ffd36a;
     background: linear-gradient(180deg, #fff3c4 0%, #ffd36a 45%, #f2a33a 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
@@ -73,7 +73,8 @@
   h1, .ad { text-shadow: 0 2px 14px rgb(9 7 13 / .55); }
 
   /* simge: videodaki gibi buzlu camın içinden belirir */
-  .sahne { position: relative; width: min(64vw, 260px); aspect-ratio: 1; margin: 20px 0 40px; }
+  .sahne { position: relative; width: min(64vw, 260px); aspect-ratio: 1; margin: 22px 0 26px; display: block; -webkit-tap-highlight-color: transparent; }
+  h1 { margin-bottom: 18px !important; }
   .sahne::before { /* simgenin arkasındaki ışık */
     content: ""; position: absolute; inset: -18%; border-radius: 50%;
     background: radial-gradient(closest-side, rgb(var(--mor) / .75), transparent);
@@ -128,7 +129,7 @@
   footer a { color: #7f7894; text-decoration: none; padding: 6px 2px; }
   footer a:hover { color: var(--yazi); }
 
-  @media (max-height: 640px) { .sahne { width: min(46vw, 200px); margin: 14px 0 26px; } .ad { margin-top: 18px; } h1 { font-size: clamp(20px, calc((100vw - 40px) / 9.6), 26px); } .ad { font-size: 19px; } footer { position: static; margin-top: 28px; } }
+  @media (max-height: 640px) { .sahne { width: min(46vw, 200px); margin: 14px 0 18px; } h1 { margin-bottom: 14px !important; } h1 { font-size: clamp(20px, calc((100vw - 40px) / 9.6), 26px); } .ad { font-size: 19px; } footer { position: static; margin-top: 28px; } }
   @media (min-width: 700px) { .magazalar { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 1fr; } h1 { font-size: 34px; } .ad { font-size: 26px; } }
   /* Telefona göre: kendi mağazası büyük ve üstte, öteki küçük altta (masaüstünde ikisi eşit). */
   .cihaz-ios #as, .cihaz-android #gp { order: 1; }
@@ -144,13 +145,15 @@
 </head>
 <body>
 <main>
-  <h1 id="baslik">Play for Free!</h1>
   <p class="ad" id="ad">OneLet: Word Ladder</p>
 
-  <div class="sahne">
+  <!-- Simgeye dokunan da telefonuna uygun mağazaya gider (betik href'i yazar). -->
+  <a class="sahne" id="simge-bag" href="#magazalar" aria-label="OneLet">
     <img class="simge" src="simge-480.webp" alt="OneLet" width="480" height="480">
     <div class="cam" aria-hidden="true"></div>
-  </div>
+  </a>
+
+  <h1 id="baslik">Play for Free!</h1>
 
   <div class="magazalar" id="magazalar">
     <a class="dugme" id="as" href="https://apps.apple.com/app/id6805576358" rel="noopener">
@@ -235,9 +238,10 @@
   // dokunuşsuz uygulama başlatamıyor (Chrome yedeğe, Play'e düşüyor — A20s ölçüldü 2026-11-17).
   // Chrome yalnız BROWSABLE ekranları başlatır → uygulamadaki App Link tanımını (VIEW · https · karayelgames.com/onelet) hedefler; 1.0.6'da yok → Play.
   var oyunAc = 'intent://karayelgames.com/onelet/#Intent;scheme=https;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;package=com.yeb.onelet;S.browser_fallback_url=' + encodeURIComponent(pl) + ';end';
-  if (android) gp.href = oyunAc;
-  // Google Play'i olmayan telefonlar (Huawei/Honor HarmonyOS·EMUI): kendiliğinden yönlendirme yok, sayfa kalır.
+  // Google Play'i olmayan telefonlar (Huawei/Honor HarmonyOS·EMUI): intent: bağlantısını tarayıcı tanımayabilir → düz Play adresi, kendiliğinden yönlendirme yok.
   var playYok = /HUAWEI|HONOR|HarmonyOS|HMSCore|HuaweiBrowser/i.test(ua);
+  if (android && !playYok) gp.href = oyunAc;
+  document.getElementById('simge-bag').href = ios ? as.href : android ? gp.href : '#magazalar';
   if (playYok) dene = false;
   if ((ios || android) && dene && q.get('stay') !== '1') {
     try { sessionStorage.setItem('onelet_yonlendi', '1'); } catch (e) {}
