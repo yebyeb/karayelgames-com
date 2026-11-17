@@ -31,7 +31,7 @@
 <link rel="preload" as="image" href="zemin.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,500;14..32,600;14..32,700;14..32,800&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
   :root {
     --zemin: #09070d;
@@ -61,8 +61,10 @@
     padding: max(32px, env(safe-area-inset-top)) 20px max(24px, env(safe-area-inset-bottom));
     gap: 0;
   }
-  h1 { margin: 0; font-size: 34px; font-weight: 700; letter-spacing: -.025em; line-height: 1.1; }
-  .ad { margin: 10px 0 0; font-size: 18px; font-weight: 500; letter-spacing: -.01em; color: #ece6f7; }
+  /* Başlık ve oyunun adı oyunun kendi yazı tipiyle (Nunito). Ad iki katman: "OneLet" kalın, alt ad ince. */
+  h1 { margin: 0; font-family: Nunito, Inter, -apple-system, sans-serif; font-size: 36px; font-weight: 900; letter-spacing: -.01em; line-height: 1.1; }
+  .ad { margin: 12px 0 0; font-family: Nunito, Inter, -apple-system, sans-serif; font-size: 22px; font-weight: 700; letter-spacing: 0; color: #ece6f7; line-height: 1.25; }
+  .ad b { font-weight: 900; color: #fff; }
   h1, .ad { text-shadow: 0 2px 14px rgb(9 7 13 / .55); }
 
   /* simge: videodaki gibi buzlu camın içinden belirir */
@@ -121,8 +123,8 @@
   footer a { color: #7f7894; text-decoration: none; padding: 6px 2px; }
   footer a:hover { color: var(--yazi); }
 
-  @media (max-height: 640px) { .sahne { width: min(46vw, 200px); margin: 22px 0 26px; } h1 { font-size: 28px; } footer { position: static; margin-top: 28px; } }
-  @media (min-width: 700px) { .magazalar { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 1fr; } h1 { font-size: 44px; } .ad { font-size: 22px; } }
+  @media (max-height: 640px) { .sahne { width: min(46vw, 200px); margin: 22px 0 26px; } h1 { font-size: 30px; } .ad { font-size: 20px; } footer { position: static; margin-top: 28px; } }
+  @media (min-width: 700px) { .magazalar { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 1fr; } h1 { font-size: 46px; } .ad { font-size: 26px; } }
   /* Telefona göre: kendi mağazası büyük ve üstte, öteki küçük altta (masaüstünde ikisi eşit). */
   .cihaz-ios #as, .cihaz-android #gp { order: 1; }
   .cihaz-ios #gp, .cihaz-android #as { order: 2; height: 52px; padding: 0 20px 0 16px; opacity: .85; box-shadow: none; justify-self: center; }
@@ -194,7 +196,10 @@
   var t = D[dil];
   document.documentElement.lang = dil;
   document.getElementById('baslik').textContent = t[0];
-  document.getElementById('ad').textContent = t[1];
+  // "OneLet" kalın, ardındaki alt ad ince (adın kendisi değişmez, yalnız biçim).
+  var adEl = document.getElementById('ad'), bol = t[1].split(/(:s*)/);
+  adEl.textContent = ''; var bb = document.createElement('b'); bb.textContent = bol[0]; adEl.appendChild(bb);
+  if (bol.length > 1) adEl.appendChild(document.createTextNode(bol.slice(1).join('')));
   document.getElementById('as-ust').textContent = t[2];
   document.getElementById('gp-ust').textContent = t[3];
   document.querySelectorAll('[data-y]').forEach(function (a) { a.textContent = t[4 + +a.dataset.y]; });
